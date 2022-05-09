@@ -17,9 +17,7 @@ class MainActivity : ComponentActivity() {
         appBar = AppBar()
 
         setContent {
-            WitchComposeTheme {
-                ScaffoldCompose(appBar)
-            }
+            ScaffoldCompose(appBar)
         }
     }
 }
