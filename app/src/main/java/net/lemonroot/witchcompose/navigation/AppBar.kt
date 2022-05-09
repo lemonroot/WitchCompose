@@ -26,7 +26,6 @@ class AppBar : ComponentActivity() {
     @Composable
     fun TopAppBar(title: String, subTitle: String?) {
         val context = LocalContext.current
-        val isNullOrEmpty = subTitle.isNullOrEmpty()
 
         CenterAlignedTopAppBar(
             title = {
@@ -34,12 +33,14 @@ class AppBar : ComponentActivity() {
                 Column (horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = title,
+                        color = md_theme_light_onPrimary,
                         fontSize = 20.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis)
                     Text(
-                        text = subTitle!!,
+                        text = subTitle,
                         fontSize = 10.sp,
+                        color = md_theme_dark_onBackground,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis)
                 }} else {
@@ -52,15 +53,16 @@ class AppBar : ComponentActivity() {
 
             },
             navigationIcon = {
-                IconButton(onClick = {
+                IconButton(
+                    onClick = {
                     Toast.makeText(context, "Menu", Toast.LENGTH_SHORT).show()
                 }){
-                    Icon(Icons.Default.Menu, null)
+                    Icon(Icons.Default.Menu, null, tint = md_theme_light_secondaryContainer)
                 }
             },
             actions = {},
             colors = centerAlignedTopAppBarColors(
-                containerColor = md_theme_dark_primary,
+                containerColor = md_theme_light_primary,
                 navigationIconContentColor = md_theme_light_secondaryContainer,
                 titleContentColor = md_theme_light_onPrimary,
                 actionIconContentColor = md_theme_light_onPrimary
