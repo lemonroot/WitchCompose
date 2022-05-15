@@ -19,10 +19,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            WitchComposeTheme {
                 // Setup nav controller. App only needs ONE "rememberNavController()" call!!!
                 navController = rememberNavController()
                 SetupNavGraph(navController)
-                AppBarScreen(navController)
+            }
         }
     }
 }

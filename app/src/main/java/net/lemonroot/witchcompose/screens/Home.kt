@@ -9,10 +9,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 @Composable
-fun Home(navController: NavController) {
+fun Home(navController: NavHostController) {
+    AppBarScreen(navController)
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -22,7 +23,7 @@ fun Home(navController: NavController) {
             text = "HOME",
             fontSize = MaterialTheme.typography.h3.fontSize,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = Color.White
         )
     }
 }

@@ -1,24 +1,18 @@
 package net.lemonroot.witchcompose.screens
 
-import android.graphics.Color
-import android.widget.Toast
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.material3.*
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.geometry.Offset.Companion.Unspecified
-import androidx.compose.ui.graphics.Color.Companion.Transparent
-import androidx.compose.ui.graphics.Color.Companion.Unspecified
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,32 +20,35 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import net.lemonroot.witchcompose.sealed.BottomBarScreen
 import net.lemonroot.witchcompose.ui.theme.*
-import java.lang.reflect.Modifier
 
 /* VARIOUS FUNCTIONS TO SETUP NAVIGATION BARS */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarScreen(navController: NavHostController){
-    WitchComposeTheme {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
         // Setup bottom navigation controller
-        Scaffold(
-            topBar = {TopBar("Test", "Test2")},
-            // Setup bottom nav bar
-            bottomBar = { BottomBar(navController = navController) }
-        ) {
-        }
+    Scaffold(
+        topBar = {TopBar("Test", "Test2", scope, drawerState)},
+        // Setup bottom nav bar
+        bottomBar = { BottomBar(navController, scope, drawerState) }
+    ) {
+        ModalNavDrawer(scope, drawerState)
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(title: String, subTitle: String?){
+fun TopBar(title: String, subTitle: String?, scope: CoroutineScope, drawerState: DrawerState){
     val context = LocalContext.current
+
 
     CenterAlignedTopAppBar (
         title = {
@@ -84,7 +81,10 @@ fun TopBar(title: String, subTitle: String?){
         navigationIcon = {
             androidx.compose.material.IconButton(
                 onClick = {
-                    Toast.makeText(context, "Menu", Toast.LENGTH_SHORT).show()
+                    if(drawerState.isClosed) {
+                        scope.launch{drawerState.open()}}
+                    else {scope.launch{drawerState.close()}}
+                    //Toast.makeText(context, "Menu", Toast.LENGTH_SHORT).show()
                 }) {
                 androidx.compose.material.Icon(
                     Icons.Rounded.Menu,
@@ -100,8 +100,9 @@ fun TopBar(title: String, subTitle: String?){
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomBar(navController: NavHostController) {
+fun BottomBar(navController: NavHostController, scope: CoroutineScope, drawerState: DrawerState) {
     val screens = listOf(
         // Call screens from the BottomBarScreen class
         BottomBarScreen.Home,
@@ -139,12 +140,6 @@ private fun RowScope.PopulateBotBar(
             ),
             onClick = {
                 navController.navigate(screen.route) {
-                    // Pop up to the start destination of the graph to
-                    // avoid building up a large stack of destinations
-                    // on the back stack as users select items
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
                     // Avoid multiple copies of the same destination when
                     // reselecting the same item
                     launchSingleTop = true
@@ -154,4 +149,35 @@ private fun RowScope.PopulateBotBar(
             }
         )
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ModalNavDrawer(scope: CoroutineScope, drawerState: DrawerState) {
+    var text by remember{
+        mutableStateOf("")
+    }
+    // icons
+    val items = listOf(Icons.Default.Favorite, Icons.Default.Face, Icons.Default.Email)
+    val selectedItem = remember{mutableStateOf(items[0])}
+
+    ModalNavigationDrawer(
+        modifier = (Modifier.padding(4.dp)),
+        drawerState = drawerState,
+        drawerContent = {
+            items.forEach { item ->
+                NavigationDrawerItem(
+                    icon = { Icon(item, contentDescription = null) },
+                    label = { Text(item.name) },
+                    selected = item == selectedItem.value,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        selectedItem.value = item
+                    },
+                    //modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+            }
+        },
+        content = {}
+    )
 }

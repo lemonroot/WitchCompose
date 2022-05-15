@@ -10,9 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 @Composable
-fun Social(navController: NavController){
+fun Social(navController: NavHostController){
+    AppBarScreen(navController)
     Box(
         modifier = Modifier
             .fillMaxSize(),

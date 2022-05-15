@@ -12,32 +12,27 @@ import net.lemonroot.witchcompose.navigation.Screen
 
 sealed class BottomBarScreen(
     val route: String,
-    val title: String,
     val icon: ImageVector,
     @StringRes val resourceId: Int
 
 ) {
     object Home: BottomBarScreen(
-        "home",
-        "Home",
+        Screen.Home.route,
         Icons.Rounded.Home,
         R.string.title
     )
     object Profile: BottomBarScreen(
-        "profile",
-        "Profile",
+        Screen.Profile.route,
         Icons.Rounded.Person,
         R.string.profile
     )
     object Explore: BottomBarScreen(
-        "explore",
-        "Explore",
+        Screen.Explore.route,
         Icons.Rounded.Public,
         R.string.explore
     )
     object Social: BottomBarScreen(
-        "social",
-        "Social",
+        Screen.Social.route,
         Icons.Rounded.Chat,
         R.string.social
     )
