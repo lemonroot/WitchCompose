@@ -61,7 +61,7 @@ fun AppBarScreen(navController: NavHostController){
             topBar = { TopBar("Test", "Test2", scope, drawerState) },
             content = {},
             // Setup bottom nav bar
-            bottomBar = { BottomBar(navController, scope, drawerState) },
+            bottomBar = { BottomBar(navController) },
         )
     }
 }
@@ -103,9 +103,10 @@ fun TopBar(title: String, subTitle: String?, scope: CoroutineScope, drawerState:
         navigationIcon = {
             androidx.compose.material.IconButton(
                 onClick = {
-                    if(drawerState.isClosed) {
-                        scope.launch{drawerState.open()}}
-                    else {scope.launch{drawerState.close()}}
+                    //if(drawerState.isClosed) {
+                        //scope.launch{drawerState.open()}}
+                    //else {scope.launch{drawerState.close()}}
+                    scope.launch{drawerState.open()}
                     //Toast.makeText(context, "Menu", Toast.LENGTH_SHORT).show()
                 }) {
                 androidx.compose.material.Icon(
@@ -124,7 +125,7 @@ fun TopBar(title: String, subTitle: String?, scope: CoroutineScope, drawerState:
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomBar(navController: NavHostController, scope: CoroutineScope, drawerState: DrawerState) {
+fun BottomBar(navController: NavHostController) {
     val screens = listOf(
         // Call screens from the BottomBarScreen class
         BottomBarScreen.Home,
@@ -171,13 +172,4 @@ private fun RowScope.PopulateBotBar(
             }
         )
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ModalNavDrawer(scope: CoroutineScope, drawerState: DrawerState) {
-    var text by remember{
-        mutableStateOf("")
-    }
-
 }
