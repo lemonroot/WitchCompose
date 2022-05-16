@@ -14,7 +14,6 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun Explore(navController: NavHostController) {
-    AppBarScreen(navController)
     Box(
         modifier = Modifier
             .fillMaxSize(),

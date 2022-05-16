@@ -13,7 +13,6 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun Home(navController: NavHostController) {
-    AppBarScreen(navController)
     Box(
         modifier = Modifier
             .fillMaxSize(),

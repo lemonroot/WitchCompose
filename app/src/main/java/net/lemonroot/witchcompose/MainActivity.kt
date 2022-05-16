@@ -20,8 +20,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             WitchComposeTheme {
-                // Setup nav controller. App only needs ONE "rememberNavController()" call!!!
+                // Setup nav controller
                 navController = rememberNavController()
+                AppBarScreen(navController)
                 SetupNavGraph(navController)
             }
         }

@@ -7,9 +7,6 @@ import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.*
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,15 +29,40 @@ import net.lemonroot.witchcompose.ui.theme.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarScreen(navController: NavHostController){
+    // Scope & state for NavDrawer
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-        // Setup bottom navigation controller
-    Scaffold(
-        topBar = {TopBar("Test", "Test2", scope, drawerState)},
-        // Setup bottom nav bar
-        bottomBar = { BottomBar(navController, scope, drawerState) }
-    ) {
-        ModalNavDrawer(scope, drawerState)
+
+    // icons
+    val items = listOf(Icons.Default.Favorite, Icons.Default.Face, Icons.Default.Email)
+    val selectedItem = remember{mutableStateOf(items[0])}
+
+    ModalNavigationDrawer(
+        drawerTonalElevation = 1.dp,
+        drawerContent = {
+            items.forEach { item ->
+                NavigationDrawerItem(
+                    icon = { Icon(item, contentDescription = null) },
+                    label = { Text(item.name) },
+                    selected = item == selectedItem.value,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        selectedItem.value = item
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+            }
+        },
+        modifier = Modifier,
+        drawerState = drawerState
+    )
+    {
+        Scaffold(
+            topBar = { TopBar("Test", "Test2", scope, drawerState) },
+            content = {},
+            // Setup bottom nav bar
+            bottomBar = { BottomBar(navController, scope, drawerState) },
+        )
     }
 }
 
@@ -157,27 +179,5 @@ fun ModalNavDrawer(scope: CoroutineScope, drawerState: DrawerState) {
     var text by remember{
         mutableStateOf("")
     }
-    // icons
-    val items = listOf(Icons.Default.Favorite, Icons.Default.Face, Icons.Default.Email)
-    val selectedItem = remember{mutableStateOf(items[0])}
 
-    ModalNavigationDrawer(
-        modifier = (Modifier.padding(4.dp)),
-        drawerState = drawerState,
-        drawerContent = {
-            items.forEach { item ->
-                NavigationDrawerItem(
-                    icon = { Icon(item, contentDescription = null) },
-                    label = { Text(item.name) },
-                    selected = item == selectedItem.value,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        selectedItem.value = item
-                    },
-                    //modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                )
-            }
-        },
-        content = {}
-    )
 }
