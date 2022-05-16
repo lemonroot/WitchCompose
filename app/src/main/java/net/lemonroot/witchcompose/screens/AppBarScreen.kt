@@ -22,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.lemonroot.witchcompose.sealed.BottomBarScreen
+import net.lemonroot.witchcompose.sealed.DrawerScreen
 import net.lemonroot.witchcompose.ui.theme.*
 
 /* VARIOUS FUNCTIONS TO SETUP NAVIGATION BARS */
@@ -37,17 +38,23 @@ fun AppBarScreen(navController: NavHostController){
     val items = listOf(Icons.Default.Favorite, Icons.Default.Face, Icons.Default.Email)
     val selectedItem = remember{mutableStateOf(items[0])}
 
+    val screens = listOf(
+        DrawerScreen.Home,
+        DrawerScreen.News,
+        DrawerScreen.Settings
+    )
+
     ModalNavigationDrawer(
         drawerTonalElevation = 1.dp,
         drawerContent = {
-            items.forEach { item ->
+            screens.forEach { screen ->
                 NavigationDrawerItem(
-                    icon = { Icon(item, contentDescription = null) },
-                    label = { Text(item.name) },
-                    selected = item == selectedItem.value,
+                    icon = { Icon(screen.icon, contentDescription = screen.title) },
+                    label = { Text(screen.title) },
+                    selected = screen.icon == selectedItem.value,
                     onClick = {
                         scope.launch { drawerState.close() }
-                        selectedItem.value = item
+                        selectedItem.value = screen.icon
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
@@ -69,9 +76,6 @@ fun AppBarScreen(navController: NavHostController){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(title: String, subTitle: String?, scope: CoroutineScope, drawerState: DrawerState){
-    val context = LocalContext.current
-
-
     CenterAlignedTopAppBar (
         title = {
             if (subTitle != null){
@@ -103,11 +107,7 @@ fun TopBar(title: String, subTitle: String?, scope: CoroutineScope, drawerState:
         navigationIcon = {
             androidx.compose.material.IconButton(
                 onClick = {
-                    //if(drawerState.isClosed) {
-                        //scope.launch{drawerState.open()}}
-                    //else {scope.launch{drawerState.close()}}
                     scope.launch{drawerState.open()}
-                    //Toast.makeText(context, "Menu", Toast.LENGTH_SHORT).show()
                 }) {
                 androidx.compose.material.Icon(
                     Icons.Rounded.Menu,

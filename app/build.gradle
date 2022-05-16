@@ -68,8 +68,8 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:1.1.1"
 
     // Material3 libraries
-    implementation("androidx.compose.material3:material3:1.0.0-alpha10")
-    implementation("androidx.compose.material3:material3-window-size-class:1.0.0-alpha10")
+    implementation("androidx.compose.material3:material3:1.0.0-alpha11")
+    implementation("androidx.compose.material3:material3-window-size-class:1.0.0-alpha11")
 
     // Icon pack
     implementation "androidx.compose.material:material-icons-extended:1.1.1"
